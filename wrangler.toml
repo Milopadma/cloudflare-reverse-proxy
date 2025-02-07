@@ -6,6 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 
 routes = [
   "new-nyc.pubkey.com/*",
+  "pubkey.com/*",
   "new.pubkey.com/*"
 ]
 

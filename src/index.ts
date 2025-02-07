@@ -15,7 +15,8 @@ const FRAMER_HOST = 'pubkey-domain.framer.website';
 const PROXY_HOSTS = {
 	nycbar: 'new-nyc.pubkey.com',
 	// dcbar: 'new.pubkey.bar/dc',
-	com: 'new.pubkey.com',
+	com: 'pubkey.com',
+	legacyCom: 'new.pubkey.com',
 };
 
 export default {
@@ -39,7 +40,7 @@ export default {
 				// any non-existent route goes to 404
 				targetPath = '/404';
 			}
-		} else if (url.hostname === PROXY_HOSTS.com) {
+		} else if (url.hostname === PROXY_HOSTS.com || url.hostname === PROXY_HOSTS.legacyCom) {
 			url.hostname = FRAMER_HOST;
 
 			// handle special cases first
