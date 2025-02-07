@@ -1,12 +1,12 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "nextblock-reverse-proxy"
+name = "domain-reverse-proxy"
 main = "src/index.ts"
 compatibility_date = "2024-10-22"
 compatibility_flags = ["nodejs_compat"]
 
 routes = [
-  "pubkey-domain-1.mylo.dev/*",
-  "pubkey-domain-2.mylo.dev/*"
+  "new-nyc.pubkey.com/*",
+  "new.pubkey.com/*"
 ]
 
 [observability]

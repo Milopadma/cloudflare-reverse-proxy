@@ -3,19 +3,55 @@ export interface Env {
 	// If you have environment variables, define them here
 }
 
+// The single framer domain that we are pointing to
+// const FRAMER_HOST = 'multi-domain-1.framer.ai';
+const FRAMER_HOST = 'pubkey-domain.framer.website';
+
+// The domains that we are routing from
+// FOR EXAMPLE:
+// - new.pubkey.bar -> multi-domain-1.framer.ai/bar/nyc/home
+// - new.pubkey.com -> multi-domain-1.framer.ai/corporate/home
+// - new.pubkey.bar/dc -> multi-domain-1.framer.ai/bar/dc/home
+const PROXY_HOSTS = {
+	nycbar: 'new-nyc.pubkey.com',
+	// dcbar: 'new.pubkey.bar/dc',
+	com: 'new.pubkey.com',
+};
+
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const url = new URL(request.url);
 		const originalHost = url.hostname;
 		let targetPath = '';
 
-		if (url.hostname === 'pubkey-domain-1.mylo.dev') {
-			url.hostname = 'multi-domain-1.framer.ai';
-			targetPath = '/bar/nyc/home';
-		} else if (url.hostname === 'pubkey-domain-2.mylo.dev') {
-			url.hostname = 'multi-domain-1.framer.ai';
-			targetPath = '/corporate/home';
-		} else if (url.hostname === 'multi-domain-1.framer.ai') {
+		if (url.hostname === PROXY_HOSTS.nycbar) {
+			console.log('DEBUG matched nycbar route');
+			url.hostname = FRAMER_HOST;
+
+			// handle special cases first
+			if (url.pathname === '/') {
+				targetPath = '/bar/nyc/home';
+			} else if (url.pathname === '/meetups' || url.pathname.startsWith('/meetups/')) {
+				targetPath = '/bar' + url.pathname; // prepend /bar to meetups
+			} else if (url.pathname === '/404') {
+				targetPath = '/404';
+			} else {
+				// any non-existent route goes to 404
+				targetPath = '/404';
+			}
+		} else if (url.hostname === PROXY_HOSTS.com) {
+			url.hostname = FRAMER_HOST;
+
+			// handle special cases first
+			if (url.pathname === '/') {
+				targetPath = '/corporate/home';
+			} else if (url.pathname === '/meetups' || url.pathname.startsWith('/meetups/')) {
+				targetPath = '/corporate' + url.pathname; // prepend /corporate to meetups
+			} else {
+				// any non-existent route goes to 404
+				targetPath = '/404';
+			}
+		} else if (url.hostname === FRAMER_HOST) {
 			return new Response('Not Found', { status: 404 });
 		}
 
@@ -45,7 +81,7 @@ export default {
 
 		// replace any mentions of the main domain in the HTML
 		const modifiedText = text
-			.replace(/multi-domain-1\.framer\.ai/g, originalHost)
+			.replace(new RegExp(FRAMER_HOST, 'g'), originalHost)
 			// add meta tags for sharing
 			.replace(
 				'</head>',
