@@ -13,7 +13,7 @@ const FRAMER_HOST = 'pubkey-domain.framer.website';
 // - new.pubkey.com -> multi-domain-1.framer.ai/corporate/home
 // - new.pubkey.bar/dc -> multi-domain-1.framer.ai/bar/dc/home
 const PROXY_HOSTS = {
-	nycbar: 'new-nyc.pubkey.com',
+	nycbar: 'pubkey.bar',
 	// dcbar: 'new.pubkey.bar/dc',
 	com: 'pubkey.com',
 	legacyCom: 'new.pubkey.com',
@@ -37,8 +37,8 @@ export default {
 			} else if (url.pathname === '/404') {
 				targetPath = '/404';
 			} else {
-				// any non-existent route goes to 404
-				targetPath = '/404';
+				// allow all other paths by prepending /bar/nyc
+				targetPath = '/bar/nyc' + url.pathname;
 			}
 		} else if (url.hostname === PROXY_HOSTS.com || url.hostname === PROXY_HOSTS.legacyCom) {
 			url.hostname = FRAMER_HOST;

@@ -5,7 +5,7 @@ compatibility_date = "2024-10-22"
 compatibility_flags = ["nodejs_compat"]
 
 routes = [
-  "new-nyc.pubkey.com/*",
+  "pubkey.bar/*",
   "pubkey.com/*",
   "new.pubkey.com/*"
 ]
